@@ -1,0 +1,78 @@
+--- An example run ---
+
+Samples: 745
+CPCV splits: 45
+
+=== Phase 1: detailed eval with baseline config ===
+Split  0  AUC=0.558  acc=0.517  Brier=0.222
+Split  1  AUC=0.565  acc=0.607  Brier=0.226
+Split  2  AUC=0.700  acc=0.725  Brier=0.195
+Split  3  AUC=0.541  acc=0.547  Brier=0.230
+Split  4  AUC=0.506  acc=0.664  Brier=0.201
+Split  5  AUC=0.582  acc=0.607  Brier=0.228
+Split  6  AUC=0.595  acc=0.691  Brier=0.206
+Split  7  AUC=0.512  acc=0.533  Brier=0.245
+Split  8  AUC=0.535  acc=0.718  Brier=0.187
+Split  9  AUC=0.601  acc=0.564  Brier=0.228
+Split 10  AUC=0.664  acc=0.635  Brier=0.208
+Split 11  AUC=0.600  acc=0.517  Brier=0.227
+Split 12  AUC=0.600  acc=0.649  Brier=0.205
+Split 13  AUC=0.624  acc=0.570  Brier=0.228
+Split 14  AUC=0.670  acc=0.689  Brier=0.208
+Split 15  AUC=0.550  acc=0.537  Brier=0.246
+Split 16  AUC=0.688  acc=0.689  Brier=0.187
+Split 17  AUC=0.645  acc=0.624  Brier=0.229
+Split 18  AUC=0.485  acc=0.507  Brier=0.256
+Split 19  AUC=0.568  acc=0.591  Brier=0.231
+Split 20  AUC=0.542  acc=0.520  Brier=0.258
+Split 21  AUC=0.601  acc=0.631  Brier=0.240
+Split 22  AUC=0.479  acc=0.480  Brier=0.280
+Split 23  AUC=0.623  acc=0.631  Brier=0.216
+Split 24  AUC=0.646  acc=0.591  Brier=0.224
+Split 25  AUC=0.681  acc=0.676  Brier=0.203
+Split 26  AUC=0.702  acc=0.658  Brier=0.225
+Split 27  AUC=0.676  acc=0.669  Brier=0.217
+Split 28  AUC=0.582  acc=0.577  Brier=0.245
+Split 29  AUC=0.702  acc=0.743  Brier=0.192
+Split 30  AUC=0.589  acc=0.570  Brier=0.228
+Split 31  AUC=0.515  acc=0.480  Brier=0.258
+Split 32  AUC=0.582  acc=0.564  Brier=0.235
+Split 33  AUC=0.449  acc=0.467  Brier=0.269
+Split 34  AUC=0.633  acc=0.570  Brier=0.216
+Split 35  AUC=0.607  acc=0.597  Brier=0.229
+Split 36  AUC=0.615  acc=0.662  Brier=0.212
+Split 37  AUC=0.561  acc=0.570  Brier=0.245
+Split 38  AUC=0.584  acc=0.676  Brier=0.195
+Split 39  AUC=0.610  acc=0.597  Brier=0.244
+Split 40  AUC=0.464  acc=0.513  Brier=0.286
+Split 41  AUC=0.603  acc=0.624  Brier=0.221
+Split 42  AUC=0.552  acc=0.570  Brier=0.261
+Split 43  AUC=0.610  acc=0.689  Brier=0.204
+Split 44  AUC=0.588  acc=0.591  Brier=0.235
+Mean AUC:          0.591
+Mean raw accuracy: 0.602
+Mean Brier:        0.227
+
+=== Phase 2: PBO sweep (8 configs x 45 splits) ===
+Configs: 8
+Config 0 (depth=4, leaf=10) ... mean AUC=0.588
+Config 1 (depth=4, leaf=20) ... mean AUC=0.590
+Config 2 (depth=5, leaf=10) ... mean AUC=0.589
+Config 3 (depth=5, leaf=20) ... mean AUC=0.593
+Config 4 (depth=6, leaf=10) ... mean AUC=0.587
+Config 5 (depth=6, leaf=20) ... mean AUC=0.589
+Config 6 (depth=7, leaf=10) ... mean AUC=0.585
+Config 7 (depth=7, leaf=20) ... mean AUC=0.587
+
+=== Phase 3: overfitting diagnostics ===
+PBO (probability of backtest overfitting): 0.300
+  Interpretation: fraction of IS/OOS partitions where
+  the best-in-sample config underperforms the median OOS.
+   <0.30 good | 0.30-0.50 marginal | >0.50 overfit-prone
+
+Best config: #3 (depth=5, leaf=20)
+  mean OOS AUC edge: 0.093
+  config Sharpe:     1.422
+  sr_variance:       0.002
+  Deflated Sharpe:   1.000  (probability best config is truly better than the null)
+  >0.95 publishable | 0.80-0.95 suggestive | <0.80 likely noise
