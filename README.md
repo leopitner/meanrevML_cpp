@@ -1,4 +1,4 @@
-# meanrev_cpp
+# meanrevML cpp
 
 A C++17 research framework for **mean-reversion vs. trend-change classification**, built around Combinatorial Purged Cross-Validation (CPCV), Probability of Backtest Overfitting (PBO), and the Deflated Sharpe Ratio (DSR). Header-only, zero external dependencies, ~1,200 lines.
 
@@ -36,36 +36,59 @@ Python dominates ML research. C++ is where models actually run. This repo demons
 
 ## Architecture
 
-```
-┌─────────────┐    ┌──────────────┐    ┌─────────────┐
-│  synthetic  │───▶│   features   │───▶│  triple-    │
-│  OHLC bars  │    │  z, vol,     │    │  barrier    │
-│  (5 regimes)│    │  mom, VR, R² │    │  labels     │
-└─────────────┘    └──────────────┘    └──────┬──────┘
-                                              │
-                                              ▼
-                    ┌──────────────────────────────────┐
-                    │  CPCV (10 groups, 2 test)        │
-                    │  45 splits + purge + embargo     │
-                    └──────────────┬───────────────────┘
-                                   │
-                    ┌──────────────▼───────────────────┐
-                    │  Random Forest (from scratch)    │
-                    │  bootstrap + feature subsampling │
-                    │  multi-percentile thresholds     │
-                    └──────────────┬───────────────────┘
-                                   │
-                    ┌──────────────▼───────────────────┐
-                    │  Diagnostics                     │
-                    │  AUC · Brier · PBO · DSR         │
-                    └──────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph S1["① Data"]
+        A["Synthetic OHLC<br/>5 regimes × 500 bars"]
+    end
+
+    subgraph S2["② Features · 7 dims"]
+        B["Z-score · rolling vol<br/>momentum 20/100<br/>variance ratio · trend R²"]
+    end
+
+    subgraph S3["③ Labels"]
+        C["Triple-barrier<br/>symmetric 1:1, h = 15"]
+    end
+
+    subgraph S4["④ Validation"]
+        D["CPCV · 10 groups, 2 test<br/>45 splits<br/>purge + embargo"]
+    end
+
+    subgraph S5["⑤ Model"]
+        E["ShallowRF<br/>bootstrap · feature subsample<br/>multi-percentile thresholds"]
+    end
+
+    subgraph S6["⑥ Diagnostics"]
+        F["Phase 1<br/>AUC · Brier · recall"]
+        G["Phase 2<br/>8 configs × 45 splits"]
+        H["Phase 3<br/>PBO · DSR"]
+    end
+
+    A --> B --> C --> D --> E
+    E --> F
+    E --> G
+    G --> H
+
+    classDef data    fill:#e3f2fd,stroke:#1976d2,color:#0d47a1
+    classDef feat    fill:#e8f5e9,stroke:#388e3c,color:#1b5e20
+    classDef lab     fill:#fff8e1,stroke:#f9a825,color:#e65100
+    classDef cv      fill:#fce4ec,stroke:#c2185b,color:#880e4f
+    classDef model   fill:#fff3e0,stroke:#ef6c00,color:#bf360c
+    classDef diag    fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+
+    class A data
+    class B feat
+    class C lab
+    class D cv
+    class E model
+    class F,G,H diag
 ```
 
 ---
 
 ## The diagnostic arc
 
-The most interesting part of this project is not the final numbers — it's the debugging trail. The pipeline reported 51% accuracy on the first run, then 54%, then 58%, then 60%, with each iteration's fix validated by a distinct diagnostic rather than wishful thinking.
+The most interesting part of this project is not the final numbers, it's the debugging trail. The pipeline reported 51% accuracy on the first run, then 54%, then 58%, then 60%, with each iteration's fix validated by a distinct diagnostic rather than wishful thinking.
 
 | Step | Signal | Diagnosis | Fix |
 | :--- | :--- | :--- | :--- |
@@ -153,7 +176,7 @@ git clone https://github.com/leopitner/meanrevML_cpp.git
 cd meanrevML_cpp
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
-./build/meanrevML_demo          # or .\build\Release\meanrev_demo.exe on Windows
+./build/meanrevML_demo          # or .\build\Release\meanrevML_demo.exe on Windows
 ```
 
 Expected runtime: ~30 seconds (Phase 2 dominates: 8 configs × 45 splits × 50 trees).
