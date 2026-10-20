@@ -13,3 +13,11 @@ endif()
 
 add_executable(meanrevML_demo src/main.cpp)
 target_include_directories(meanrevML_demo PRIVATE include)
+option(BUILD_PYTHON_BINDINGS "Build pybind11 Python bindings" OFF)
+
+if(BUILD_PYTHON_BINDINGS)
+    find_package(pybind11 CONFIG REQUIRED)
+    pybind11_add_module(meanrevML_py bindings.cpp)
+    target_include_directories(meanrevML_py PRIVATE include)
+    target_compile_features(meanrevML_py PRIVATE cxx_std_17)
+endif()

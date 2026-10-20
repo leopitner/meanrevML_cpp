@@ -11,9 +11,12 @@ namespace meanrevML {
 
     struct Sample {
         int bar_index;
+        int end_bar_index;      
         int64_t start_time;
         int64_t end_time;
         int label;
+        double hit_time;        
+        double hit_magnitude;   
         std::vector<double> features;
     };
 

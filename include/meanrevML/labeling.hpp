@@ -50,10 +50,13 @@ inline std::vector<Sample> triple_barrier_labels(
         }
 
         Sample s;
-        s.bar_index  = i;
-        s.start_time = bars[i].timestamp;
-        s.end_time   = bars[hit].timestamp;
-        s.label      = label;
+        s.bar_index     = i;
+        s.end_bar_index = hit;
+        s.start_time    = bars[i].timestamp;
+        s.end_time      = bars[hit].timestamp;
+        s.label         = label;
+        s.hit_time      = (double)(hit - i);
+        s.hit_magnitude = std::abs((bars[hit].close - entry) / entry) / std::max(sigma, 1e-12);
         out.push_back(std::move(s));
     }
     return out;

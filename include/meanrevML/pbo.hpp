@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <numeric>
 #include <limits>
+#include <utility>   
 
 namespace meanrevML {
 
@@ -71,7 +72,7 @@ inline double compute_auc(const std::vector<double>& proba, const std::vector<in
     return (double)(rank_sum - n_pos*(n_pos+1)/2) / (double)(n_pos * n_neg);
 }
 
-// ---------- PBO via CSCV ----------
+// PBO via CSCV
 // M[t][n] = performance of config n on split t
 // T = splits (treated as quasi-independent observations)
 // N = configurations (hyperparameter sets)

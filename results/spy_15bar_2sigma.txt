@@ -1,0 +1,110 @@
+Loaded 10062 bars from data\spy.us.txt
+Samples: 1812
+CPCV splits: 45
+
+=== Phase 1: detailed eval with baseline config ===
+Split  0  AUC=0.491  acc=0.515  Brier=0.254  Sharpe=0.05
+Split  1  AUC=0.486  acc=0.490  Brier=0.251  Sharpe=-0.02
+Split  2  AUC=0.472  acc=0.474  Brier=0.251  Sharpe=-0.01
+Split  3  AUC=0.513  acc=0.507  Brier=0.249  Sharpe=0.00
+Split  4  AUC=0.533  acc=0.533  Brier=0.249  Sharpe=0.05
+Split  5  AUC=0.475  acc=0.490  Brier=0.251  Sharpe=0.01
+Split  6  AUC=0.501  acc=0.499  Brier=0.250  Sharpe=0.00
+Split  7  AUC=0.507  acc=0.526  Brier=0.250  Sharpe=0.02
+Split  8  AUC=0.499  acc=0.510  Brier=0.251  Sharpe=-0.01
+Split  9  AUC=0.475  acc=0.483  Brier=0.256  Sharpe=-0.02
+Split 10  AUC=0.503  acc=0.494  Brier=0.251  Sharpe=0.07
+Split 11  AUC=0.484  acc=0.497  Brier=0.255  Sharpe=-0.01
+Split 12  AUC=0.505  acc=0.501  Brier=0.254  Sharpe=0.02
+Split 13  AUC=0.478  acc=0.508  Brier=0.256  Sharpe=0.06
+Split 14  AUC=0.477  acc=0.494  Brier=0.255  Sharpe=-0.04
+Split 15  AUC=0.490  acc=0.481  Brier=0.256  Sharpe=0.02
+Split 16  AUC=0.528  acc=0.522  Brier=0.252  Sharpe=0.03
+Split 17  AUC=0.504  acc=0.519  Brier=0.250  Sharpe=0.05
+Split 18  AUC=0.469  acc=0.483  Brier=0.254  Sharpe=-0.03
+Split 19  AUC=0.502  acc=0.496  Brier=0.252  Sharpe=-0.06
+Split 20  AUC=0.465  acc=0.494  Brier=0.253  Sharpe=-0.02
+Split 21  AUC=0.421  acc=0.483  Brier=0.257  Sharpe=-0.12
+Split 22  AUC=0.459  acc=0.483  Brier=0.256  Sharpe=0.01
+Split 23  AUC=0.490  acc=0.497  Brier=0.253  Sharpe=-0.03
+Split 24  AUC=0.535  acc=0.517  Brier=0.248  Sharpe=0.00
+Split 25  AUC=0.530  acc=0.523  Brier=0.248  Sharpe=-0.01
+Split 26  AUC=0.498  acc=0.530  Brier=0.250  Sharpe=0.05
+Split 27  AUC=0.524  acc=0.533  Brier=0.247  Sharpe=0.00
+Split 28  AUC=0.548  acc=0.530  Brier=0.246  Sharpe=0.09
+Split 29  AUC=0.521  acc=0.522  Brier=0.249  Sharpe=0.05
+Split 30  AUC=0.554  acc=0.554  Brier=0.247  Sharpe=0.08
+Split 31  AUC=0.518  acc=0.530  Brier=0.249  Sharpe=0.03
+Split 32  AUC=0.515  acc=0.541  Brier=0.249  Sharpe=-0.03
+Split 33  AUC=0.504  acc=0.481  Brier=0.253  Sharpe=-0.03
+Split 34  AUC=0.562  acc=0.550  Brier=0.247  Sharpe=0.04
+Split 35  AUC=0.477  acc=0.510  Brier=0.255  Sharpe=-0.02
+Split 36  AUC=0.511  acc=0.532  Brier=0.251  Sharpe=-0.06
+Split 37  AUC=0.476  acc=0.490  Brier=0.255  Sharpe=-0.02
+Split 38  AUC=0.509  acc=0.523  Brier=0.252  Sharpe=-0.00
+Split 39  AUC=0.496  acc=0.530  Brier=0.250  Sharpe=-0.01
+Split 40  AUC=0.530  acc=0.511  Brier=0.249  Sharpe=0.04
+Split 41  AUC=0.485  acc=0.486  Brier=0.254  Sharpe=-0.00
+Split 42  AUC=0.518  acc=0.508  Brier=0.250  Sharpe=-0.09
+Split 43  AUC=0.514  acc=0.533  Brier=0.251  Sharpe=-0.03
+Split 44  AUC=0.525  acc=0.508  Brier=0.250  Sharpe=0.01
+Mean AUC:          0.502
+Mean raw accuracy: 0.510
+Mean Brier:        0.251
+Mean Sharpe:       0.00
+
+=== Phase 2: PBO sweep (8 configs x 45 splits) ===
+Configs: 40
+Config  0 (depth=4, leaf=5, trees=50) ... AUC=0.510  Sharpe=-0.00
+Config  1 (depth=4, leaf=5, trees=100) ... AUC=0.509  Sharpe=-0.00
+Config  2 (depth=4, leaf=10, trees=50) ... AUC=0.512  Sharpe=-0.00
+Config  3 (depth=4, leaf=10, trees=100) ... AUC=0.512  Sharpe=-0.00
+Config  4 (depth=4, leaf=15, trees=50) ... AUC=0.510  Sharpe=-0.01
+Config  5 (depth=4, leaf=15, trees=100) ... AUC=0.511  Sharpe=-0.00
+Config  6 (depth=4, leaf=20, trees=50) ... AUC=0.509  Sharpe=-0.00
+Config  7 (depth=4, leaf=20, trees=100) ... AUC=0.509  Sharpe=-0.00
+Config  8 (depth=4, leaf=30, trees=50) ... AUC=0.506  Sharpe=-0.00
+Config  9 (depth=4, leaf=30, trees=100) ... AUC=0.507  Sharpe=-0.00
+Config 10 (depth=5, leaf=5, trees=50) ... AUC=0.511  Sharpe=0.01
+Config 11 (depth=5, leaf=5, trees=100) ... AUC=0.510  Sharpe=0.01
+Config 12 (depth=5, leaf=10, trees=50) ... AUC=0.507  Sharpe=0.01
+Config 13 (depth=5, leaf=10, trees=100) ... AUC=0.507  Sharpe=0.00
+Config 14 (depth=5, leaf=15, trees=50) ... AUC=0.507  Sharpe=0.00
+Config 15 (depth=5, leaf=15, trees=100) ... AUC=0.509  Sharpe=0.00
+Config 16 (depth=5, leaf=20, trees=50) ... AUC=0.504  Sharpe=-0.01
+Config 17 (depth=5, leaf=20, trees=100) ... AUC=0.506  Sharpe=-0.00
+Config 18 (depth=5, leaf=30, trees=50) ... AUC=0.501  Sharpe=-0.01
+Config 19 (depth=5, leaf=30, trees=100) ... AUC=0.502  Sharpe=-0.01
+Config 20 (depth=6, leaf=5, trees=50) ... AUC=0.499  Sharpe=0.00
+Config 21 (depth=6, leaf=5, trees=100) ... AUC=0.504  Sharpe=0.00
+Config 22 (depth=6, leaf=10, trees=50) ... AUC=0.509  Sharpe=0.00
+Config 23 (depth=6, leaf=10, trees=100) ... AUC=0.507  Sharpe=0.01
+Config 24 (depth=6, leaf=15, trees=50) ... AUC=0.503  Sharpe=-0.00
+Config 25 (depth=6, leaf=15, trees=100) ... AUC=0.502  Sharpe=0.00
+Config 26 (depth=6, leaf=20, trees=50) ... AUC=0.501  Sharpe=-0.00
+Config 27 (depth=6, leaf=20, trees=100) ... AUC=0.500  Sharpe=-0.00
+Config 28 (depth=6, leaf=30, trees=50) ... AUC=0.498  Sharpe=-0.01
+Config 29 (depth=6, leaf=30, trees=100) ... AUC=0.498  Sharpe=-0.01
+Config 30 (depth=7, leaf=5, trees=50) ... AUC=0.502  Sharpe=0.01
+Config 31 (depth=7, leaf=5, trees=100) ... AUC=0.501  Sharpe=0.00
+Config 32 (depth=7, leaf=10, trees=50) ... AUC=0.501  Sharpe=0.01
+Config 33 (depth=7, leaf=10, trees=100) ... AUC=0.499  Sharpe=0.01
+Config 34 (depth=7, leaf=15, trees=50) ... AUC=0.498  Sharpe=-0.00
+Config 35 (depth=7, leaf=15, trees=100) ... AUC=0.499  Sharpe=-0.00
+Config 36 (depth=7, leaf=20, trees=50) ... AUC=0.500  Sharpe=0.00
+Config 37 (depth=7, leaf=20, trees=100) ... AUC=0.498  Sharpe=-0.01
+Config 38 (depth=7, leaf=30, trees=50) ... AUC=0.496  Sharpe=-0.01
+Config 39 (depth=7, leaf=30, trees=100) ... AUC=0.498  Sharpe=-0.01
+
+=== Phase 3: overfitting diagnostics ===
+PBO (probability of backtest overfitting): 0.00
+  Interpretation: fraction of IS/OOS partitions where
+  the best-in-sample config underperforms the median OOS.
+   <0.30 good | 0.30-0.50 marginal | >0.50 overfit-prone
+
+Best config: #32 (depth=7, leaf=10, trees=50)
+  mean OOS Sharpe:   0.01
+  config Sharpe:     0.23
+  sr_variance:       0.02
+  Deflated Sharpe:   0.39
+  >0.95 publishable | 0.80-0.95 suggestive | <0.80 likely noise
