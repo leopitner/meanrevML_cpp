@@ -1,8 +1,8 @@
 # meanrevML
 
-A C++17 research framework for **mean-reversion vs. trend-change classification**, built around Combinatorial Purged Cross-Validation (CPCV), Probability of Backtest Overfitting (PBO), and the Deflated Sharpe Ratio (DSR). Header-only, zero external dependencies, ~1,400 lines.
+A C++17 research framework for **mean-reversion vs. trend-change classification**, built around Combinatorial Purged Cross-Validation (CPCV), Probability of Backtest Overfitting (PBO), and the Deflated Sharpe Ratio (DSR). 
 
-The project's central thesis is that **honest validation matters more than a high backtest score**. Every design decision below is oriented toward correctly identifying when a model is learning versus when it is overfitting — at the cost of reporting the honest (sometimes unflattering) number.
+The project's central thesis is that **honest validation matters more than a high backtest score**. Every design decision below is oriented toward correctly identifying when a model is learning versus when it is overfitting, at the cost of reporting the honest (sometimes unflattering) number.
 
 ---
 
@@ -38,7 +38,7 @@ Raw outputs: [`results/demo_run.txt`](results/demo_run.txt), [`results/spy_15bar
 
 ## Why C++ for this?
 
-Python dominates ML research. C++ is where models actually run. This repo demonstrates:
+C++ is where models actually run. This repo demonstrates:
 
 1. **Zero-dependency deployment** — the entire pipeline (feature engineering, CPCV, Random Forest, PBO, DSR) is header-only C++17. No scikit-learn, no NumPy, no OpenCV. `cmake && build` and it runs.
 2. **A hand-written Random Forest** with feature subsampling, bootstrap aggregation, and multi-percentile threshold search — ~150 lines, no magic.
@@ -115,18 +115,12 @@ flowchart TB
 | [`main.cpp`](src/main.cpp) | Three-phase orchestrator: detailed eval → PBO sweep → overfitting diagnostics | `main` |
 | [`bindings.cpp`](bindings.cpp) | pybind11 module exposing CPCV, RF, and diagnostics to Python | `PYBIND11_MODULE(meanrevML_py, …)` |
 
-### Design principles
-
-- **Header-only core** — every module from `features.hpp` through `pbo.hpp` is a header. Zero external dependencies. `cmake && build` and it runs.
-- **No lookahead by construction** — barriers evaluate only forward; purging removes any training label whose window overlaps a test window; embargo removes bars immediately downstream. The pipeline *cannot* leak future information.
-- **Pure functions** — every module takes inputs by const-ref and returns by value. Each one is testable in isolation and deterministic given its inputs.
-- **Reproducible** — the synthetic generator is seeded; the RF seeds its bootstrap sampler per-tree. Identical output on every machine (verified in CI across Linux, macOS, Windows).
 
 ---
 
 ## The diagnostic arc
 
-The most interesting part of this project is not the final numbers — it's the debugging trail. The synthetic pipeline reported 51% accuracy on its first run, then 54%, then 58%, then 60%, with each iteration's fix validated by a distinct diagnostic rather than wishful thinking.
+The most interesting part of this is the debugging trail. The synthetic pipeline reported 51% accuracy on its first run, then 54%, then 58%, then 60%, with each iteration's fix validated by a distinct diagnostic rather than wishful thinking.
 
 | Step | Signal | Diagnosis | Fix |
 | :--- | :--- | :--- | :--- |
@@ -170,10 +164,10 @@ Two configurations were tested on 10,062 bars downloaded from Stooq. Both are re
 The 0.517 in Configuration B is the classic trap. Its single-trial p-value is ≈ 0.04, which looks suggestive. Three reasons to reject it:
 
 1. **Multiple-testing correction.** Two configurations were tested, not one. Bonferroni-corrected p ≈ 0.08 — not significant.
-2. **Brier unchanged.** A genuinely predictive feature would drop Brier alongside AUC. Both runs report 0.251 — the AUC movement is a small monotonic shift in probability output, not a discriminator.
+2. **Brier unchanged.** A genuinely predictive feature would drop Brier alongside AUC. Both runs report 0.251, the AUC movement is a small monotonic shift in probability output, not a discriminator.
 3. **DSR is single-trial by construction.** The 0.93 value assumes the strategy was specified before data collection. Selecting the better of two configurations inflates it; the deflation-adjusted value is closer to 0.80 (below the "suggestive" threshold).
 
-**PBO = 0.00 in both runs is degenerate, not excellent.** All 40 hyperparameter configs land within 1.3 AUC points of each other. When every config performs identically, "best-in-sample" is just the luckiest noise. PBO cannot detect overfitting when there is no edge to overfit — that is exactly the diagnostic pattern to expect on a martingale-like series.
+**PBO = 0.00 in both runs is degenerate, not excellent.** All 40 hyperparameter configs land within 1.3 AUC points of each other. When every config performs identically, "best-in-sample" is just the luckiest noise. PBO cannot detect overfitting when there is no edge to overfit, that is exactly the diagnostic pattern to expect on a martingale-like series.
 
 ### Conclusion
 
@@ -324,29 +318,15 @@ On both real-data runs, PBO = 0.00. This is a **diagnostic artifact**, not a win
 
 ### Multiple-testing correction on the SPY runs
 
-Configuration B's AUC of 0.517 has single-trial p ≈ 0.04. Because two configurations were tested, the Bonferroni-corrected p ≈ 0.08 — not significant. The DSR of 0.93 was calculated as if Configuration B was the only strategy tested; correcting for the second trial puts it closer to 0.80, below the "suggestive" threshold.
+Configuration B's AUC of 0.517 has single-trial p ≈ 0.04. Because two configurations were tested, the Bonferroni-corrected p ≈ 0.08, not significant. The DSR of 0.93 was calculated as if Configuration B was the only strategy tested; correcting for the second trial puts it closer to 0.80, below the "suggestive" threshold.
 
 **This correction is applied deliberately.** Reporting the better-looking config at its raw significance would inflate the result by roughly a factor of two.
 
 ### The real-data conclusion is a null
 
-No configuration produced evidence of tradeable intraday mean reversion in SPY. This is the expected result for a heavily arbitraged index ETF — the last 20–100 bars of 5-minute prices are not predictive of the next 5-bar direction in an instrument whose microstructure is dominated by market makers. Reporting this null honestly is the point of the framework.
+No configuration produced evidence of tradeable intraday mean reversion in SPY. This is the expected result for a heavily arbitraged index ETF, the last 20–100 bars of 5-minute prices are not predictive of the next 5-bar direction in an instrument whose microstructure is dominated by market makers. Reporting this null honestly is the point of the framework.
 
----
 
-## Future work
-
-The following extensions were considered and are **explicitly deferred**. Each would be one hypothesis, one commit, reported as-is — no iteration toward a preferred result.
-
-- **Different instrument.** Small-caps (IWM) or leveraged ETFs (SOXL) show historically stronger intraday reversion than SPY. One run, one result.
-- **Overnight / intraday regime split.** Mean reversion is strongest at the overnight→intraday transition. Filtering to open-hour bars is a clean hypothesis.
-- **Microstructure features.** Bid-ask spread proxy, trade-volume imbalance, VWAP deviation. These carry the actual intraday signal in liquid equities; rolling price statistics do not.
-- **Triple-barrier metadata side-channel.** `hit_time` and `hit_magnitude` are already populated on `Sample`; training auxiliary regressors and feeding their predictions as meta-features is a natural next step (multi-task Random Forest).
-- **Wider config sweep.** 100+ configs with independent hyperparameter axes would make the DSR penalty non-vacuous on both synthetic and real data.
-
-None of these should be run in a loop until one produces AUC > 0.55. That is exactly the failure mode this project exists to prevent. A README that says *"explored 5 hypotheses; 0 produced AUC > 0.53 on CPCV"* is a stronger signal than one that says *"tuned until AUC = 0.58."*
-
----
 
 ## References
 
