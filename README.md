@@ -34,19 +34,7 @@ Two feature-horizon configurations were tested. **Both are reported**, including
 
 Raw outputs: [`results/demo_run.txt`](results/demo_run.txt), [`results/spy_15bar_2sigma.txt`](results/spy_15bar_2sigma.txt), [`results/spy_5bar_15sigma.txt`](results/spy_5bar_15sigma.txt).
 
----
 
-## Why C++ for this?
-
-C++ is where models actually run. This repo demonstrates:
-
-1. **Zero-dependency deployment** — the entire pipeline (feature engineering, CPCV, Random Forest, PBO, DSR) is header-only C++17. No scikit-learn, no NumPy, no OpenCV. `cmake && build` and it runs.
-2. **A hand-written Random Forest** with feature subsampling, bootstrap aggregation, and multi-percentile threshold search.
-3. **A from-scratch CPCV implementation** with time-based purging and embargo, the kind of statistical correctness you cannot get from a generic `KFold`.
-4. **A from-scratch PBO and DSR implementation** following Bailey, Borwein, López de Prado & Zhu (2017), including a Beasley-Springer-Moro inverse-normal CDF for the DSR expectation term.
-5. **Honest results on real data** — the SPY 5-minute run reports near-chance AUC and a degenerate PBO.
-
----
 
 ## Architecture
 
