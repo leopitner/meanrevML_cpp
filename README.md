@@ -23,7 +23,7 @@ The project's central thesis is that **honest validation matters more than a hig
 
 ### Real data (SPY 5-minute bars, Stooq snapshot, 10,062 bars)
 
-Two feature-horizon configurations were tested. **Both are reported**, including the second one even though it looked better — that is the point of the framework.
+Two feature-horizon configurations were tested. **Both are reported**, including the second one even though it looked better.
 
 | Config | Samples | Mean AUC | Mean Brier | Mean split Sharpe | PBO | DSR |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -41,10 +41,10 @@ Raw outputs: [`results/demo_run.txt`](results/demo_run.txt), [`results/spy_15bar
 C++ is where models actually run. This repo demonstrates:
 
 1. **Zero-dependency deployment** — the entire pipeline (feature engineering, CPCV, Random Forest, PBO, DSR) is header-only C++17. No scikit-learn, no NumPy, no OpenCV. `cmake && build` and it runs.
-2. **A hand-written Random Forest** with feature subsampling, bootstrap aggregation, and multi-percentile threshold search — ~150 lines, no magic.
-3. **A from-scratch CPCV implementation** with time-based purging and embargo — the kind of statistical correctness you cannot get from a generic `KFold`.
+2. **A hand-written Random Forest** with feature subsampling, bootstrap aggregation, and multi-percentile threshold search.
+3. **A from-scratch CPCV implementation** with time-based purging and embargo, the kind of statistical correctness you cannot get from a generic `KFold`.
 4. **A from-scratch PBO and DSR implementation** following Bailey, Borwein, López de Prado & Zhu (2017), including a Beasley-Springer-Moro inverse-normal CDF for the DSR expectation term.
-5. **Honest results on real data** — the SPY 5-minute run reports near-chance AUC and a degenerate PBO. That is the intended outcome, not a bug.
+5. **Honest results on real data** — the SPY 5-minute run reports near-chance AUC and a degenerate PBO.
 
 ---
 
@@ -141,7 +141,7 @@ The bimodal AUC distribution on synthetic data is the *point*: the pipeline corr
 
 ### Synthetic data
 
-Mean OOS AUC 0.591 across 45 CPCV splits, with a clearly bimodal distribution: 19 splits above 0.60 (genuine signal), 8 below 0.53 (regime-boundary failures), 18 near chance. The failure clusters are exactly what CPCV is designed to expose — test blocks whose regime composition diverges from the training set.
+Mean OOS AUC 0.591 across 45 CPCV splits, with a clearly bimodal distribution: 19 splits above 0.60 (genuine signal), 8 below 0.53 (regime-boundary failures), 18 near chance. The failure clusters are exactly what CPCV is designed to expose, test blocks whose regime composition diverges from the training set.
 
 Hyperparameter sweep (40 configs: depths 4–7 × leaf 5–30 × trees 50/100) yields mean OOS AUC in the tight band **0.496–0.512**. No config overfits; every config learns roughly the same signal. **PBO = 0.300** (borderline marginal), **DSR saturated at 1.000** (z ≈ 6.0; see caveats).
 
@@ -163,7 +163,7 @@ Two configurations were tested on 10,062 bars downloaded from Stooq. Both are re
 
 The 0.517 in Configuration B is the classic trap. Its single-trial p-value is ≈ 0.04, which looks suggestive. Three reasons to reject it:
 
-1. **Multiple-testing correction.** Two configurations were tested, not one. Bonferroni-corrected p ≈ 0.08 — not significant.
+1. **Multiple-testing correction.** Two configurations were tested, not one. Bonferroni-corrected p ≈ 0.08, not significant.
 2. **Brier unchanged.** A genuinely predictive feature would drop Brier alongside AUC. Both runs report 0.251, the AUC movement is a small monotonic shift in probability output, not a discriminator.
 3. **DSR is single-trial by construction.** The 0.93 value assumes the strategy was specified before data collection. Selecting the better of two configurations inflates it; the deflation-adjusted value is closer to 0.80 (below the "suggestive" threshold).
 
@@ -246,7 +246,7 @@ In this project, the DSR is computed on **per-split trade-return Sharpes**, not 
 Requires CMake ≥ 3.16 and any C++17 compiler (MSVC 2019+, GCC 9+, Clang 10+).
 
 ```bash
-git clone https://github.com/<you>/meanrevML.git
+git clone https://github.com/leopitner/meanrevML.git
 cd meanrevML
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
@@ -255,39 +255,22 @@ cmake --build build --config Release
 ### Synthetic demo
 
 ```bash
-./build/meanrev_demo                       # Unix
-.\build\Release\meanrev_demo.exe           # Windows
+./build/meanrevML_demo                       # Unix
+.\build\Release\meanrevML_demo.exe           # Windows
 ```
 
 Expected runtime: ~2–3 minutes (Phase 2 dominates: 40 configs × 45 splits).
 
-### Real data
+### Using Python
 
-1. Download the 5-minute US snapshot from [stooq.com/db/h](https://stooq.com/db/h/), extract `SPY.US.txt`.
-2. Place it at `data/SPY.US.txt`.
-3. Run:
-
-```bash
-./build/meanrev_demo data/SPY.US.txt
-```
-
-### Python bindings (optional)
-
-```bash
-pip install pybind11[global]
-cmake -S . -B build -DBUILD_PYTHON_BINDINGS=ON \
-      -Dpybind11_DIR="$(python -m pybind11 --cmakedir)"
-cmake --build build --config Release
-```
-
-Then from Python:
+From Python:
 
 ```python
 import sys
 sys.path.insert(0, "build/Release")
 import meanrevML_py as mr
 
-bars = mr.load_stooq_txt("data/SPY.US.txt")
+bars = mr.load_stooq_txt("data/spy.us.txt")
 cfg = mr.RFConfig()
 cfg.n_trees, cfg.max_depth, cfg.min_samples_leaf = 150, 6, 15
 rf = mr.ShallowRF(cfg)
@@ -308,9 +291,9 @@ The results above are honest, not impressive. Several of them require explicit d
 
 The reported DSR = 1.000 is `norm_cdf(z)` saturating in double precision ($z \approx 6.0$). The **z-statistic is the meaningful number**. Three assumption violations inflate it:
 
-1. **CPCV splits are not independent** — they share overlapping training data. The formula assumes $T$ independent observations; effective $T$ is smaller.
-2. **AUC edges are not trading returns** — for the synthetic run, the DSR was calculated on AUC edges. The real-data runs use per-split trade returns, which is the honest input.
-3. **Only 40 configs were tested** — the multiple-testing penalty is real but small because the configs are highly correlated (50 vs. 100 trees on the same bootstrap is barely a different strategy).
+1. **CPCV splits are not independent** - they share overlapping training data. The formula assumes $T$ independent observations; effective $T$ is smaller.
+2. **AUC edges are not trading returns** - for the synthetic run, the DSR was calculated on AUC edges. The real-data runs use per-split trade returns, which is the honest input.
+3. **Only 40 configs were tested** - the multiple-testing penalty is real but small because the configs are highly correlated (50 vs. 100 trees on the same bootstrap is barely a different strategy).
 
 ### PBO = 0.00 is degenerate, not excellent
 
