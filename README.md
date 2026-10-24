@@ -234,7 +234,7 @@ In this project, the DSR is computed on **per-split trade-return Sharpes**, not 
 Requires CMake ≥ 3.16 and any C++17 compiler (MSVC 2019+, GCC 9+, Clang 10+).
 
 ```bash
-git clone https://github.com/leopitner/meanrevML.git
+git clone https://github.com/leopitner/meanrevML_cpp.git
 cd meanrevML
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
